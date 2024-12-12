@@ -1,33 +1,16 @@
-datatype Node = Node(id: int, neighbors: set<Node>)
+datatype Weight = W(int)
+datatype Node = V(int)
 
-class Graph
-  {
-  var nodes: set<Node>
+datatype Edge = Edge(Node, Node, Weight)
+datatype Graph = Graph(set<Node>, set<Edge >)
 
-  constructor(nodes: set<Node>)
-  {
-    this.nodes := nodes;
-  }
-}
+method Main(){
+  var node1 := V(1);
+  var node2 := V(2);
+  var node3 := V(3);
 
-function CreateNode(id: int): Node
-{
-  Node(id, {})
-}
+  var edge1 := Edge(node1, node2, W(2));
+  var edge2 := Edge(node2,node3, W(4));
 
-function AddNeighbors(node: Node, neighbors: set<Node>): Node
-{
-  Node(node.id, neighbors)
-}
-
-method Main() {
-  var node1 := CreateNode(1);
-  var node2 := CreateNode(2);
-  var node3 := CreateNode(3);
-
-  var updatedNode1 := AddNeighbors(node1, {node2, node3});
-  var updatedNode2 := AddNeighbors(node2, {node1, node3});
-  var updatedNode3 := AddNeighbors(node3, {node1, node2});
-
-  var graph := new Graph({updatedNode1, updatedNode2, updatedNode3});
+  var graph1 := Graph({node1,node2,node3}, {edge1,edge2});
 }
