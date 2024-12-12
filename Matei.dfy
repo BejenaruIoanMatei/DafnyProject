@@ -44,3 +44,8 @@ method Main(){
 
   var graph1 := Graph({node1,node2,node3}, {edge1,edge2});
 }
+
+function hasNegativeCycle(graph: Graph): bool
+{
+  
+}
