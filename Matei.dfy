@@ -57,6 +57,49 @@ method check_if_set_empty(s: set<int>) returns (IsEmpty:bool)
   IsEmpty := s == {};
 }
 
+datatype MyInt = Valid(n: int) | MinValue
+
+method testMinValue(x: MyInt) returns (isMin: bool)
+{
+  isMin := match x {
+    case MinValue => true
+    case Valid(_) => false
+  };
+}
+
+/*
+method RelaxEdges(distance: array<MyInt>, predecessor: array<int>)
+  returns (success: bool)
+  requires distance.Length == vertices
+  requires predecessor.Length == vertices
+  modifies distance, predecessor
+  ensures success ==> forall u, v, w :: (u, v, w) in edges ==> distance[v] <= distance[u] + w
+{
+  success := true;
+
+  var i: nat := 0;
+
+  while i < vertices - 1
+    invariant 0 <= i <= vertices - 1
+    invariant forall u, v, w :: (u, v, w) in edges && distance[u] != MyInt.MinValue ==> distance[v] <= distance[u] + w
+  {
+    for i := 0 to |edges|
+
+    {
+      var egde := edges[i];
+      var u, v, w := edge.0, edge.1, edge.2;
+
+      if distance[u] != MyInt.MinValue && distance[u] + w < distance[v] {
+        distance[v] := distance[u] + w;
+        predecessor[v] := u;
+      }
+    }
+    i := i + 1;
+  }
+  success := forall u, v, w :: (u, v, w) in edges && distance[u] != MyInt.MinValue ==> distance[v] <= distance[u] + w;
+}
+
+*/
 method hasNegativeCycle(graph: Graph) returns (hasNegative: bool)
 {
   var nodess := graph.nodes;
