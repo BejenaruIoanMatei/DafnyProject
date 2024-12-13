@@ -1,8 +1,8 @@
-datatype Weight = W(int)
-datatype Node = V(int)
+datatype Weight = W(val: int)
+datatype Node = V(id: int)
 
-datatype Edge = Edge(Node, Node, Weight)
-datatype Graph = Graph(set<Node>, set<Edge >)
+datatype Edge = Edge(source: Node, destination: Node, weight: Weight)
+datatype Graph = Graph(nodes: set<Node>, edges: set<Edge>)
 
 function edge_weight(e: Edge): int
 {
@@ -45,7 +45,3 @@ method Main(){
   var graph1 := Graph({node1,node2,node3}, {edge1,edge2});
 }
 
-function hasNegativeCycle(graph: Graph): bool
-{
-  
-}
