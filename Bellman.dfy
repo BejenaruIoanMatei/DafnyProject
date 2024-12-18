@@ -107,7 +107,7 @@ datatype New_Edge = Edge_new(source: Node, destination: Node, weight: New_Weight
 method Relax_Edges(source: Node, predecessor: array<int>, edges: array<New_Edge>, distance: array<MyInt>)
   modifies distance, predecessor
 {
-  if distance.Length == 0 || edges.Length == 0 || predecessor.Length == 0 
+  if distance.Length == 0 || edges.Length == 0 || predecessor.Length == 0
   {
     return;
   }
@@ -143,6 +143,41 @@ method Relax_Edges(source: Node, predecessor: array<int>, edges: array<New_Edge>
 
 }
 
+method Detect_Negative_Cycle(edges: array<New_Edge>, distance: array <MyInt>)
+  returns (hasNegativeCycle: bool)
+{
+  hasNegativeCycle := false;
+
+  if distance.Length == 0 || edges.Length == 0
+  {
+    return;
+  }
+
+  var j: nat := 0;
+
+  while j < edges.Length
+    invariant 0 <= j <= edges.Length
+  {
+    var edge := edges[j];
+    var u := edge.source.id;
+    var v := edge.destination.id;
+    var w := edge.weight.val;
+
+    if 0 <= u < distance.Length && 0 <= v < distance.Length
+    {
+      if distance[u] != MinValue && MyIntLessThan(MyIntAdd(distance[u], w), distance[v])
+      {
+        hasNegativeCycle := true;
+        return;
+      }
+    }
+
+    j := j + 1;
+  }
+
+}
+
+/*
 method hasNegativeCycle(graph: Graph) returns (hasNegative: bool)
 {
   var nodess := graph.nodes;
@@ -158,4 +193,5 @@ method hasNegativeCycle(graph: Graph) returns (hasNegative: bool)
   }
 
 }
+*/
 
