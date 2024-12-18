@@ -177,8 +177,9 @@ method Detect_Negative_Cycle(edges: array<New_Edge>, distance: array <MyInt>)
 
 }
 
-/*
+
 method hasNegativeCycle(graph: Graph) returns (hasNegative: bool)
+  requires isValid(graph)
 {
   var nodess := graph.nodes;
   var edgess := graph.edges;
@@ -193,5 +194,3 @@ method hasNegativeCycle(graph: Graph) returns (hasNegative: bool)
   }
 
 }
-*/
-
