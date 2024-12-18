@@ -39,7 +39,7 @@ predicate isValid(graph: Graph)
   forall e :: e in graph.edges ==> e.source in graph.nodes && e.destination in graph.nodes
 }
 
-/*
+
 method Main(){
   var node1 := V(1);
   var node2 := V(2);
@@ -50,7 +50,7 @@ method Main(){
 
   var graph1 := Graph({node1,node2,node3}, {edge1,edge2});
 }
-*/
+
 
 predicate EmptySet<T(==)>() { {} is set<T> }
 
@@ -101,38 +101,47 @@ function MyIntLessThan(x: MyInt, y: MyInt): bool
   }
 }
 
-datatype New_Weight = W(val: MyInt)
-datatype New_Edge = Edge(source: Node, destination: Node, weight: New_Weight)
+datatype New_Weight = W_new(val: MyInt)
+datatype New_Edge = Edge_new(source: Node, destination: Node, weight: New_Weight)
 
-method RelaxEdges(distance: array<MyInt>, predecessor: array<int>, edges: array<New_Edge>)
+method Relax_Edges(source: Node, predecessor: array<int>, edges: array<New_Edge>, distance: array<MyInt>)
   modifies distance, predecessor
 {
+  if distance.Length == 0 || edges.Length == 0 || predecessor.Length == 0 
+  {
+    return;
+  }
+
   var i: nat := 0;
 
   while i < distance.Length - 1
     invariant 0 <= i <= distance.Length - 1
   {
     var j: nat := 0;
+
     while j < edges.Length
       invariant 0 <= j <= edges.Length
     {
       var edge := edges[j];
       var u := edge.source.id;
       var v := edge.destination.id;
-      var w := edge.weight;
+      var w := edge.weight.val;
 
-      if distance[u] != MyInt.MinValue && MyIntLessThan(MyIntAdd(distance[u], w.val), distance[v])
+      if 0 <= u < distance.Length && 0 <= v < distance.Length && 0 <= v < predecessor.Length
       {
-        distance[v] := MyIntAdd(distance[u], w.val);
-        predecessor[v] := u;
+        if distance[u] != MinValue && MyIntLessThan(MyIntAdd(distance[u], w), distance[v])
+        {
+          distance[v] := MyIntAdd(distance[u], w);
+          predecessor[v] := u;
+        }
       }
       j := j + 1;
     }
     i := i + 1;
   }
+
+
 }
-
-
 
 method hasNegativeCycle(graph: Graph) returns (hasNegative: bool)
 {
