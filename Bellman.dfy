@@ -67,21 +67,50 @@ method testMinValue(x: MyInt) returns (isMin: bool)
   };
 }
 
+function MyIntToInt(x: MyInt): int
+  requires x != MinValue
+{
+  match x {
+    case Valid(n) => n
+  }
+}
+
+function MyIntAdd(x: MyInt, y: MyInt): MyInt
+{
+  match x {
+    case MinValue => MinValue
+    case Valid(n) =>
+      match y {
+        case MinValue => MinValue
+        case Valid(m) => Valid(n + m)
+      }
+  }
+}
+
+function MyIntLessThan(x: MyInt, y: MyInt): bool
+{
+  match x {
+    case MinValue => false
+    case Valid(n) =>
+      match y {
+        case MinValue => false
+        case Valid(m) => n < m
+      }
+  }
+}
+
 /*
-method RelaxEdges(distance: array<MyInt>, predecessor: array<int>)
+method RelaxEdges(distance: array<MyInt>, predecessor: array<int>, edges: array<Edge>)
   returns (success: bool)
-  requires distance.Length == vertices
-  requires predecessor.Length == vertices
   modifies distance, predecessor
-  ensures success ==> forall u, v, w :: (u, v, w) in edges ==> distance[v] <= distance[u] + w
 {
   success := true;
 
   var i: nat := 0;
 
-  while i < vertices - 1
-    invariant 0 <= i <= vertices - 1
-    invariant forall u, v, w :: (u, v, w) in edges && distance[u] != MyInt.MinValue ==> distance[v] <= distance[u] + w
+  while i < distance.Length - 1
+    invariant 0 <= i <= distance.Length - 1
+    invariant forall e :: e in edges && distance[e.source.id] != int.MinValue ==> distance[e.destination.id] <= distance[e.source.id] + e.weight.val
   {
     for i := 0 to |edges|
 
@@ -98,8 +127,9 @@ method RelaxEdges(distance: array<MyInt>, predecessor: array<int>)
   }
   success := forall u, v, w :: (u, v, w) in edges && distance[u] != MyInt.MinValue ==> distance[v] <= distance[u] + w;
 }
-
 */
+
+
 method hasNegativeCycle(graph: Graph) returns (hasNegative: bool)
 {
   var nodess := graph.nodes;
