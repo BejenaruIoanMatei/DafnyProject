@@ -140,7 +140,6 @@ method Relax_Edges(source: Node, predecessor: array<int>, edges: array<New_Edge>
     i := i + 1;
   }
 
-
 }
 
 method Detect_Negative_Cycle(edges: array<New_Edge>, distance: array <MyInt>)
@@ -176,7 +175,6 @@ method Detect_Negative_Cycle(edges: array<New_Edge>, distance: array <MyInt>)
   }
 
 }
-
 
 method hasNegativeCycle(graph: Graph) returns (hasNegative: bool)
   requires isValid(graph)
