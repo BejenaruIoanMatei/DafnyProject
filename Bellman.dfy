@@ -104,14 +104,17 @@ function MyIntLessThan(x: MyInt, y: MyInt): bool
 datatype New_Weight = W_new(val: MyInt)
 datatype New_Edge = Edge_new(source: Node, destination: Node, weight: New_Weight)
 
+ghost predicate Length_Ver(edges: seq<New_Edge>, distanceLength: nat)
+{
+  forall edge :: edge in edges ==>
+                   0 <= edge.source.id < distanceLength && 0 <= edge.destination.id < distanceLength
+}
+
 method Relax_Edges(source: Node, predecessor: array<int>, edges: array<New_Edge>, distance: array<MyInt>)
   modifies distance, predecessor
+  requires distance.Length > 0 && edges.Length > 0 && predecessor.Length > 0
+  requires predecessor.Length == distance.Length
 {
-  if distance.Length == 0 || edges.Length == 0 || predecessor.Length == 0
-  {
-    return;
-  }
-
   var i: nat := 0;
 
   while i < distance.Length - 1
@@ -176,19 +179,27 @@ method Detect_Negative_Cycle(edges: array<New_Edge>, distance: array <MyInt>)
 
 }
 
-method hasNegativeCycle(graph: Graph) returns (hasNegative: bool)
-  requires isValid(graph)
+method BellmanFord(source: Node, predecessor: array<int>, edges: array<New_Edge>, distance: array<MyInt>)
+  returns (hasNegativeCycle: bool)
+  modifies distance, predecessor
+  requires distance.Length > 0 && edges.Length > 0 && predecessor.Length > 0
+  requires predecessor.Length == distance.Length
+  requires 0 <= source.id < distance.Length
 {
-  var nodess := graph.nodes;
-  var edgess := graph.edges;
-
-  if nodess == {} {
-    hasNegative := false;
-    return;
-  }
-  else{
-    hasNegative := true;
-    return;
+  var i := 0;
+  while i < distance.Length
+    invariant 0 <= i <= distance.Length
+  {
+    distance[i] := MinValue;
+    predecessor[i] := -1;
+    i := i + 1;
   }
 
+  if 0 <= source.id < distance.Length {
+    distance[source.id] := Valid(0);
+  }
+
+  Relax_Edges(source, predecessor, edges, distance);
+
+  hasNegativeCycle := Detect_Negative_Cycle(edges, distance);
 }
