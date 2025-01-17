@@ -137,6 +137,70 @@ while i < n
   hasNegativeCycle := Detect_Negative_Cycle(edges, distance);
 }
 
+method Main()
+
+{
+  // Construirea nodurilor
+  var node1 := V(0);
+  var node2 := V(1);
+  var node3 := V(2);
+
+  // Construirea greutăților
+  var weight1 := W_new(Valid(5));
+  var weight2 := W_new(Valid(3));
+  var weight3 := W_new(Valid(-2));
+
+  // Construirea muchiilor
+  var edge1 := Edge_new(node1, node2, weight1); // muchie de la node1 la node2 cu greutate 5
+  var edge2 := Edge_new(node2, node3, weight2); // muchie de la node2 la node3 cu greutate 3
+  var edge3 := Edge_new(node3, node1, weight3); // muchie de la node3 la node1 cu greutate -2
+
+  // Array-ul de muchii
+  var edges := new New_Edge[3];
+  edges[0] := edge1;
+  edges[1] := edge2;
+  edges[2] := edge3;
+
+  // Inițializarea array-urilor de distanțe și predecesori
+  var distance := new MyInt[3];
+  var predecessor := new int[3];
+
+  // Setarea valorilor implicite
+  for i := 0 to 2 {
+    distance[i] := MinValue;
+    predecessor[i] := -1;
+  }
+
+  // Apelarea Bellman-Ford
+  var hasNegativeCycle := BellmanFord(node1, predecessor, edges, distance);
+
+  // Validarea rezultatelor
+  print "Rezultate Bellman-Ford:\n";
+  print "Distante:\n";
+  for i := 0 to distance.Length - 1
+  {
+    if distance[i] == MinValue {
+      print "Node ", i, ": Infinit\n";
+    } else {
+      match distance[i] {
+        case Valid(n) => print "Node ", i, ": ", n, "\n";
+        case MinValue => print "Node ", i, ": Infinit\n";
+      }
+    }
+  }
+
+  print "Predecesori:\n";
+  for i := 0 to predecessor.Length - 1
+  {
+    print "Node ", i, ": ", predecessor[i], "\n";
+  }
+
+  if hasNegativeCycle {
+    print "Graful are un ciclu negativ.\n";
+  } else {
+    print "Graful nu are un ciclu negativ.\n";
+  }
+}
 
 
 
