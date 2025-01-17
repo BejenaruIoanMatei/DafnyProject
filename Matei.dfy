@@ -27,19 +27,17 @@ function MyIntLessThan(x: MyInt, y: MyInt): bool
   }
 }
 
+ghost predicate Length_Ver(edges: seq<New_Edge>, distanceLength: nat)
+{
+  forall edge :: edge in edges ==>
+                   0 <= edge.source.id < distanceLength && 0 <= edge.destination.id < distanceLength
+}
+
 method Relax_Edges(source: Node, predecessor: array<int>, edges: array<New_Edge>, distance: array<MyInt>)
   modifies distance, predecessor
   requires distance.Length > 0 && edges.Length > 0 && predecessor.Length > 0
   requires predecessor.Length == distance.Length
-  requires forall edge: New_Edge :: edge in seq(edges) ==>
-                                      0 <= edge.source.id < distance.Length && 0 <= edge.destination.id < distance.Length
-
 {
-  if distance.Length == 0 || edges.Length == 0 || predecessor.Length == 0
-  {
-    return;
-  }
-
   var i: nat := 0;
 
   while i < distance.Length - 1
@@ -69,3 +67,72 @@ method Relax_Edges(source: Node, predecessor: array<int>, edges: array<New_Edge>
   }
 
 }
+
+method Detect_Negative_Cycle(edges: array<New_Edge>, distance: array <MyInt>)
+  returns (hasNegativeCycle: bool)
+{
+  hasNegativeCycle := false;
+
+  if distance.Length == 0 || edges.Length == 0
+  {
+    return;
+  }
+
+  var j: nat := 0;
+
+  while j < edges.Length
+    invariant 0 <= j <= edges.Length
+  {
+    var edge := edges[j];
+    var u := edge.source.id;
+    var v := edge.destination.id;
+    var w := edge.weight.val;
+
+    if 0 <= u < distance.Length && 0 <= v < distance.Length
+    {
+      if distance[u] != MinValue && MyIntLessThan(MyIntAdd(distance[u], w), distance[v])
+      {
+        hasNegativeCycle := true;
+        return;
+      }
+    }
+
+    j := j + 1;
+  }
+
+}
+
+method BellmanFord(source: Node, predecessor: array<int>, edges: array<New_Edge>, distance: array<MyInt>)
+  returns (hasNegativeCycle: bool)
+  modifies distance, predecessor
+{
+  var n := distance.Length;
+  hasNegativeCycle := false;
+
+  distance[source.id] := Valid(0);
+
+  var i: nat := 0;
+
+  while i < n
+
+    invariant 0 <= i <= 
+  {
+    if i != source.id {
+      distance[i] := MinValue;
+    }
+    predecessor[i] := -1;
+    i := i + 1;
+  }
+
+  var k: nat := 0;
+  while k < n - 1 {
+    Relax_Edges(source, predecessor, edges, distance);
+    k := k + 1;
+  }
+
+  hasNegativeCycle := Detect_Negative_Cycle(edges, distance);
+}
+
+
+
+
