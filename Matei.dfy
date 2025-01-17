@@ -105,30 +105,24 @@ method Detect_Negative_Cycle(edges: array<New_Edge>, distance: array <MyInt>)
 method BellmanFord(source: Node, predecessor: array<int>, edges: array<New_Edge>, distance: array<MyInt>)
   returns (hasNegativeCycle: bool)
   modifies distance, predecessor
+  requires distance.Length > 0 && edges.Length > 0 && predecessor.Length > 0
+  requires predecessor.Length == distance.Length
+  requires 0 <= source.id < distance.Length
 {
-  var n := distance.Length;
-  hasNegativeCycle := false;
-
-  distance[source.id] := Valid(0);
-
-  var i: nat := 0;
-
-  while i < n
-
-    invariant 0 <= i <= 
+  var i := 0;
+  while i < distance.Length
+    invariant 0 <= i <= distance.Length
   {
-    if i != source.id {
-      distance[i] := MinValue;
-    }
+    distance[i] := MinValue;
     predecessor[i] := -1;
     i := i + 1;
   }
 
-  var k: nat := 0;
-  while k < n - 1 {
-    Relax_Edges(source, predecessor, edges, distance);
-    k := k + 1;
+  if 0 <= source.id < distance.Length {
+    distance[source.id] := Valid(0);
   }
+
+  Relax_Edges(source, predecessor, edges, distance);
 
   hasNegativeCycle := Detect_Negative_Cycle(edges, distance);
 }
